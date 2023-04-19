@@ -50,7 +50,7 @@ export default function Modal({ handleModal }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute left-0 top-0 h-full w-full flex items-center justify-center bg-black backdrop-blur-sm bg-opacity-25 overflow-hidden"
+            className="fixed left-0 top-0 h-full w-full flex items-center justify-center bg-black backdrop-blur-sm bg-opacity-25 overflow-hidden"
         >
             {/* Close */}
             <motion.button

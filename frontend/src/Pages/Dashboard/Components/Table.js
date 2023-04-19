@@ -7,6 +7,7 @@ export default function Table({ selected }) {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [filteredData, setFilteredData] = useState([]);
 
     const fetchData = async () => {
         setLoading(true);
@@ -33,9 +34,10 @@ export default function Table({ selected }) {
                 ).toLocaleString();
             });
             const filterData = dataLocal.filtered_bookings;
+            setFilteredData(filterData);
             setData(filterData);
             setLoading(false);
-        } catch(error) {
+        } catch (error) {
             setLoading(false);
             setError("Something went wrong");
         }
@@ -46,11 +48,11 @@ export default function Table({ selected }) {
     }, []);
 
     useEffect(() => {
-        if (selected !== "all") {
-            const filterData = data.filter((item) => item.status === selected);
-            setData(filterData);
-            console.log(filterData);
-        }
+      if(selected === "all") return setData(filteredData);
+      // filter data if selected is not "all"
+
+      const filterData = data.filter((item) => selected ? item.status === selected : true);
+      setData(filterData);
     }, [selected]);
 
     const headings = [
