@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import bg from "../../Assets/bg.jpg";
 import Modal from "./Modal";
 import { CloseIcon, CubeIcon } from "../../Components/Icons";
 import { AnimatePresence, motion } from "framer-motion";
 import A from "../../Assets/Rooms/A.png";
 import B from "../../Assets/Rooms/B.jpeg";
 import C from "../../Assets/Rooms/C.jpg";
+import { BASE_URL } from "../../Config/url";
 
 export default function Rooms() {
   const [rooms, setRooms] = useState([]);
@@ -17,7 +17,7 @@ export default function Rooms() {
   };
 
   const getAllRooms = async () => {
-    const res = await fetch("http://localhost:5000/api/rooms/all");
+    const res = await fetch(`${BASE_URL}/rooms/all`);
     const data = await res.json();
     setRooms(data.rooms);
   };

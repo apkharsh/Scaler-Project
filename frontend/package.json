@@ -21,7 +21,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "proxy": "http://localhost:5000"
+    "proxy": "https://hotel-manage-zr8f.onrender.com/api/bookings/all"
   },
   "eslintConfig": {
     "extends": [

@@ -5,6 +5,7 @@ import Success from "../../Assets/Lotties/Success.json";
 import Loader from "../../Assets/Lotties/Loader.json";
 import { AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router";
+import { BASE_URL } from "../../Config/url";
 
 export default function BookNow() {
   const navigate = useNavigate();
@@ -56,10 +57,8 @@ export default function BookNow() {
     e.preventDefault();
     setLoading1(true);
     const { username, email, roomType, startTime, endTime } = data;
-    // send a post request to localhost:5000/api/bookings/create
-    // with data as body
 
-    fetch("http://localhost:5000/api/bookings/create", {
+    fetch(`${BASE_URL}/bookings/create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

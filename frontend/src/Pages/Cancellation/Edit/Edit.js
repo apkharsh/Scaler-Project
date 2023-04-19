@@ -5,6 +5,7 @@ import { useParams, useLocation } from "react-router-dom";
 // use cors
 import cors from "cors";
 import axios from "axios";
+import { BASE_URL } from "../../../Config/url";
 
 cors();
 
@@ -57,15 +58,10 @@ export default function Edit() {
     setLoading1(true);
     const { userName, email, roomType, checkInTime, checkOutTime } = data;
 
-    console.log(data);
-    console.log(`http://localhost:5000/api/bookings/update/${id}`);
-
     let c1 = new Date(checkInTime).getTime();
     let c2 = new Date(checkOutTime).getTime();
 
-    // send a post request to localhost:5000/api/bookings/create
-    // with data as body
-    fetch(`http://localhost:5000/api/bookings/update/${id}`, {
+    fetch(`${BASE_URL}/bookings/update/${id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

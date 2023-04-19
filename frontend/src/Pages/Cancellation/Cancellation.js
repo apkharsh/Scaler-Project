@@ -4,6 +4,7 @@ import { CancelIcon2, EditIcon } from "../../Components/Icons";
 import { Link } from "react-router-dom";
 import Loader from "../../Assets/Lotties/Loader.json";
 import Lottie from "lottie-react";
+import { BASE_URL } from "../../Config/url";
 
 export default function Cancellation() {
 
@@ -12,7 +13,7 @@ export default function Cancellation() {
 
   const fetchData = async () => {
     setLoading(true);
-    const response = await fetch("http://localhost:5000/api/bookings/all");
+    const response = await fetch(`${BASE_URL}/bookings/all`);
 
     var dataLocal = await response.json();
 

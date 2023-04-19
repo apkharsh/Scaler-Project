@@ -3,6 +3,7 @@ import avatar from "../../../Assets/avatar.png";
 import Modal from "./Modal";
 import { AnimatePresence } from "framer-motion";
 import { useLocation, useNavigate, useParams } from "react-router";
+import { BASE_URL } from "../../../Config/url";
 
 export default function Cancel() {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,7 +22,7 @@ export default function Cancel() {
   };
 
   const getRefund = () => {
-    fetch(`http://localhost:5000/api/bookings/delete/${id}`, {
+    fetch(`${BASE_URL}/bookings/delete/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -37,7 +38,7 @@ export default function Cancel() {
   };
 
   useEffect(() => {
-    fetch(`http://localhost:5000/api/bookings/getRefundAmount/${id}`, {
+    fetch(`${BASE_URL}/bookings/getRefundAmount/${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

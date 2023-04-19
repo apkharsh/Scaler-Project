@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { CloseIcon } from "../../Components/Icons";
 import { motion } from "framer-motion";
+import { BASE_URL } from "../../Config/url";
 
 export default function Modal({ handleModal }) {
     const [data, setData] = useState({
@@ -25,7 +26,7 @@ export default function Modal({ handleModal }) {
         const { roomNumber, roomType , price} = data;
         console.log(data)
 
-        fetch("http://localhost:5000/api/rooms/create", {
+        fetch(`${BASE_URL}/rooms/create`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
