@@ -8,9 +8,9 @@ import { motion } from "framer-motion";
 
 export default function Dashboard() {
   const cards = [
-    { id: 1, img: A, type: "Room : A", price: "1000" },
-    { id: 2, img: B, type: "Room : B", price: "2000" },
-    { id: 3, img: C, type: "Room : C", price: "5000" },
+    { id: 1, img: A, type: "Room : Standard", price: "1000" },
+    { id: 2, img: B, type: "Room : Deluxe", price: "2000" },
+    { id: 3, img: C, type: "Room : Supreme", price: "5000" },
   ];
   let date = new Date();
 
