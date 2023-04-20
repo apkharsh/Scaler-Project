@@ -95,58 +95,7 @@ export default function BookNow() {
             <Error error={error} />;
         }
     };
-
-    // }
-    // const handleSubmit = (e) => {
-    //     e.preventDefault();
-    //     setLoading1(true);
-    //     const { username, email, roomType, startTime, endTime } = data;
-
-    //     try{
-    //       fetch(`${BASE_URL}/bookings/create`, {
-    //         method: "POST",
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //             // use cors
-    //             // "Cors": "no-cors",
-    //             // "Access-Control-Allow-Origin": "*",
-    //             xFormUrlEncoded: "true",
-    //         },
-    //         body: JSON.stringify({
-    //             username,
-    //             email,
-    //             roomType,
-    //             startTime,
-    //             endTime,
-    //         }),
-    //     }).then((res) => {
-    //         res.json()
-    //             .then((resp) => {
-    //                 if (resp.error) {
-    //                     setLoading1(false);
-    //                     setError(resp.error);
-    //                 } else {
-    //                     setLoading1(false);
-    //                     setLoading2(true);
-    //                     setTimeout(() => {
-    //                         navigate("/");
-    //                     }, 1000);
-    //                 }
-    //             })
-    //             .catch((err) => {
-    //                 setLoading1(false);
-    //                 setLoading2(false);
-    //                 setError(err);
-    //             });
-    //     });
-    //     } catch (err) {
-    //         setLoading1(false);
-    //         setLoading2(false);
-    //         setError(err);
-    //         console.log(err)
-    //     }
-    // };
-
+    
     useEffect(() => {
         setTimeout(() => {
             setError(null);
