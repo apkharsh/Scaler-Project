@@ -60,22 +60,26 @@ export default function Table({ selected }) {
         },
         {
             id: 2,
-            name: "Customer",
+            name: "Room Type",
         },
         {
             id: 3,
-            name: "Check-in",
+            name: "Customer",
         },
         {
             id: 4,
-            name: "Check-out",
+            name: "Check-in",
         },
         {
             id: 5,
-            name: "Amount",
+            name: "Check-out",
         },
         {
             id: 6,
+            name: "Amount",
+        },
+        {
+            id: 7,
             name: "Status",
         },
     ];
@@ -116,6 +120,9 @@ export default function Table({ selected }) {
                             <tr className="border-b" key={item._id}>
                                 <td className="py-2 px-4">
                                     {item.roomID.roomNumber}
+                                </td>
+                                <td className="py-2 px-4">
+                                    {item.roomID.roomType}
                                 </td>
                                 <td className="py-2 px-4">{item.userName}</td>
                                 <td className="py-2 px-4">

@@ -65,26 +65,30 @@ export default function Cancellation() {
     const headings = [
         {
             id: 1,
-            name: "Room",
+            name: "Room No.",
         },
         {
             id: 2,
-            name: "Customer",
+            name: "Room Type",
         },
         {
             id: 3,
-            name: "Check-in",
+            name: "Customer",
         },
         {
             id: 4,
-            name: "Check-out",
+            name: "Check-in",
         },
         {
             id: 5,
-            name: "Amount",
+            name: "Check-out",
         },
         {
             id: 6,
+            name: "Amount",
+        },
+        {
+            id: 7,
             name: "Actions",
         },
     ];
@@ -98,8 +102,7 @@ export default function Cancellation() {
                                 <td
                                     key={item.id}
                                     className={`py-3 px-4 min-w-[150px] text-zinc-600 
-                    ${item.name === "Actions" && "min-w-[70px]"}
-                  `}
+                    ${item.name === "Actions" && "min-w-[70px]"}`}
                                 >
                                     <p>{item.name}</p>
                                 </td>
@@ -126,6 +129,9 @@ export default function Cancellation() {
                             if (item.status === "not checked in") {
                                 return (
                                     <tr className="border-b" key={item._id}>
+                                        <td className="py-2 px-4">
+                                            {item.roomID.roomNumber}
+                                        </td>
                                         <td className="py-2 px-4">
                                             {item.roomID.roomType}
                                         </td>
