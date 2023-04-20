@@ -1,7 +1,10 @@
-import React, { useState } from "react";
-import { CloseIcon } from "../../Components/Icons";
-import { motion } from "framer-motion";
+import React, { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { BASE_URL } from "../../Config/url";
+import Error from "../../Components/Error";
+import Loader from "../../Assets/Lotties/Loader.json";
+import Lottie from "lottie-react";
+import Success from "../../Assets/Lotties/Success.json";
 
 export default function Modal({ handleModal }) {
     const [data, setData] = useState({
@@ -9,6 +12,11 @@ export default function Modal({ handleModal }) {
         roomType: "",
         price: 0,
     });
+
+    const [loading1, setLoading1] = useState(false);
+    const [loading2, setLoading2] = useState(false);
+    const [error, setError] = useState(null);
+    // const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -21,29 +29,52 @@ export default function Modal({ handleModal }) {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault();
-        const { roomNumber, roomType , price} = data;
-        console.log(data)
 
-        fetch(`${BASE_URL}/rooms/create`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                xFormUrlEncoded: "true",
-            },
-            // with data as body
-            body: JSON.stringify({ roomNumber, roomType, price }),
-        }).then((res) => {
-            res.json()
-                .then((data) => {
-                    console.log(data);
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
-        });
-    };
+        const { roomNumber, roomType, price } = data;
+
+        try {
+            setLoading1(true);
+            const response = await fetch(`${BASE_URL}/rooms/create`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    xFormUrlEncoded: "true",
+                },
+                // with data as body
+                body: JSON.stringify({ roomNumber, roomType, price }),
+            });
+
+            const data = await response.json();
+
+            setLoading1(false);
+
+            if (data.error) {
+                setError(data.error);
+                setTimeout(() => {
+                    <Error error={error} />
+                },2000)
+            } else {
+                setLoading2(true);
+                setTimeout(() => {
+                    setLoading2(false);
+                    handleModal(false);
+                },2000)
+            }
+        } catch (err) {
+            setError(err);
+            setTimeout(() => {
+                <Error error={error} />
+            },2000)
+        }
+    }
+
+    useEffect(() => {
+        setTimeout(() => {
+            setError(null);
+        }, 3000);
+    }, [error]);
 
     return (
         <motion.div
@@ -122,7 +153,8 @@ export default function Modal({ handleModal }) {
                             <div className="w-full">
                                 <button
                                     onClick={handleSubmit}
-                                className="bg-black hover:bg-[#000000] transition-all ease-linear text-white w-full py-3 rounded-md">
+                                    className="bg-black hover:bg-[#000000] transition-all ease-linear text-white w-full py-3 rounded-md"
+                                >
                                     {" "}
                                     Send{" "}
                                 </button>
@@ -131,6 +163,30 @@ export default function Modal({ handleModal }) {
                     </form>
                 </div>
             </motion.div>
+
+            {/* Error */}
+            <AnimatePresence>
+                {error !== null && <Error error={error} />}
+                {loading1 && (
+                    <div className="bg-[#FDFDFD] bg-opacity-90 w-full h-full absolute top-0 left-0 flex items-center justify-center">
+                        <Lottie
+                            animationData={Loader}
+                            className="w-[10rem]"
+                            loop={false}
+                        />
+                    </div>
+                )}
+                {loading2 && (
+                    <div className="bg-[#FDFDFD] bg-opacity-90 w-full h-full absolute top-0 left-0 flex items-center justify-center">
+                        <Lottie
+                            animationData={Success}
+                            className="w-[10rem]"
+                            loop={false}
+                        />
+                    </div>
+                )}
+                {error !== null && <Error error={error} />}
+            </AnimatePresence>
         </motion.div>
     );
 }

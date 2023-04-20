@@ -2,10 +2,14 @@ import React, { useState, useEffect } from "react";
 import avatar from "../../../Assets/avatar.png";
 import { useNavigate } from "react-router";
 import { useParams, useLocation } from "react-router-dom";
+import Lottie from "lottie-react";
+import Success from "../../../Assets/Lotties/Success.json";
+import Loader from "../../../Assets/Lotties/Loader.json";
+import { AnimatePresence } from "framer-motion";
 // use cors
 import cors from "cors";
-import axios from "axios";
 import { BASE_URL } from "../../../Config/url";
+import Error from "../../../Components/Error";
 
 cors();
 
@@ -17,6 +21,7 @@ export default function Edit() {
 
     const [loading1, setLoading1] = useState(false);
     const [loading2, setLoading2] = useState(false);
+    const [error, setError] = useState(null);
 
     function convertDateTimeLocalToUnixTime(datetimeLocalStr) {
         const dateObj = new Date(datetimeLocalStr);
@@ -34,46 +39,22 @@ export default function Edit() {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-
-        // user will enter the date in normal format but backend will only handle unix timestamp
-        // so convert the date to unix timestamp
-
-        // if (name === "checkInTime") {
-        //   const unixTime = new Date(value).getTime();
-        //   setData((prevData) => {
-        //     return {
-        //       ...prevData,
-        //       checkInTime: unixTime,
-        //     };
-        //   });
-        // } else if (name === "checkOutTime") {
-        //   const unixTime = new Date(value).getTime();
-        //   setData((prevData) => {
-        //     return {
-        //       ...prevData,
-        //       checkOutTime: unixTime,
-        //     };
-        //   });
-        // } else {
         setData((prevData) => {
             return {
                 ...prevData,
                 [name]: value,
             };
         });
-        // }
     };
     const { id } = useParams();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading1(true);
         const { unixTime, unixTime2 } = formattedData();
 
-        setLoading1(true);
         const { userName, email, roomType, checkInTime, checkOutTime } = data;
-
-        let c1 = new Date(checkInTime).getTime();
-        let c2 = new Date(checkOutTime).getTime();
+        // checkin and checkout time is coming form above convertDateTimeLocalToUnixTime function
 
         fetch(`${BASE_URL}/bookings/update/${id}`, {
             method: "POST",
@@ -93,20 +74,36 @@ export default function Edit() {
                 res.json();
                 setLoading1(false);
                 setLoading2(true);
-                setTimeout(() => {
-                    navigate("/");
-                }, 1000);
+
             })
-            .then((data) => console.log(data))
+            .then((data) => {
+                if (data.error) {
+                    setError(data.error);
+                    return;
+                } else {
+                    setLoading1(false);
+                    setLoading2(true);
+                    setTimeout(() => {
+                        navigate("/");
+                    }, 1000);
+                }
+            })
             .catch((err) => {
-              setLoading1(false);
-              setLoading2(false);
-              console.log(err + "error")
+                setLoading1(false);
+                setLoading2(false);
+                setError(err);
+                // console.log(err + "error");
             });
     };
 
+    useEffect(() => {
+      setTimeout(() => {
+        setError(null);
+      }, 3000);
+    }, [error]);
+
     return (
-        <form className="w-full" onSubmit={handleSubmit}>
+        <form className="w-full relative" onSubmit={handleSubmit}>
             <div className="flex flex-col xl:flex-row gap-10">
                 <div className="w-full xl:w-[25%] flex flex-col justify-center xl:justify-start items-center xl:items-start gap-10">
                     <div>
@@ -230,11 +227,33 @@ export default function Edit() {
             <div className="flex item-center w-full justify-end mt-5">
                 <button
                     onSubmit={handleSubmit}
+                    disabled={loading1 || loading2}
                     className="px-2 w-full xl:w-52 py-6 rounded-xl bg-black text-white hover:bg-[#000000] hover:shadow-xl transition-all"
                 >
                     Update
                 </button>
             </div>
+            <AnimatePresence>
+                {loading1 && (
+                    <div className="bg-[#FDFDFD] bg-opacity-90 w-full h-full absolute top-0 left-0 flex items-center justify-center">
+                        <Lottie
+                            animationData={Loader}
+                            className="w-[10rem]"
+                            loop={false}
+                        />
+                    </div>
+                )}
+                {loading2 && (
+                    <div className="bg-[#FDFDFD] bg-opacity-90 w-full h-full absolute top-0 left-0 flex items-center justify-center">
+                        <Lottie
+                            animationData={Success}
+                            className="w-[10rem]"
+                            loop={false}
+                        />
+                    </div>
+                )}
+                {error !== null && <Error error={error} />}
+            </AnimatePresence>
         </form>
     );
 }

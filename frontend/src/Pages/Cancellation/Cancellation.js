@@ -43,8 +43,7 @@ export default function Cancellation() {
             const checkInTime = new Date(item.checkInTime).getTime();
             const checkOutTime = new Date(item.checkOutTime).getTime();
 
-            if (currentTime >= checkInTime && currentTime <= checkOutTime)
-                item.status = "checked in";
+            if (currentTime >= checkInTime && currentTime <= checkOutTime) item.status = "checked in";
             else if (currentTime > checkOutTime) item.status = "checked out";
             else item.status = "not checked in";
 
