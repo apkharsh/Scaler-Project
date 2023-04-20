@@ -56,7 +56,7 @@ export default function Table({ selected }) {
     const headings = [
         {
             id: 1,
-            name: "Room",
+            name: "Room No.",
         },
         {
             id: 2,
@@ -115,7 +115,7 @@ export default function Table({ selected }) {
                         return (
                             <tr className="border-b" key={item._id}>
                                 <td className="py-2 px-4">
-                                    {item.roomID.roomType}
+                                    {item.roomID.roomNumber}
                                 </td>
                                 <td className="py-2 px-4">{item.userName}</td>
                                 <td className="py-2 px-4">

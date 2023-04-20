@@ -83,9 +83,9 @@ export default function Dashboard() {
               </p>
             </div>
             <div className="flex gap-2 items-center">
-              <p className="text-gray-500 ">Sort By</p>
+              <p className="text-gray-500 ">Filter</p>
               <select
-                className="border border-gray-400 rounded-md p-1 outline-none"
+                className="border border-gray-400 rounded-md p-1.5 outline-none"
                 name="filter"
                 id=""
                 value={selected}
@@ -94,7 +94,7 @@ export default function Dashboard() {
                 }}
               >
                 <option value="all">All</option>
-                <option value="not checked in">Booked</option>
+                <option value="not checked in">Upcoming</option>
               </select>
             </div>
           </div>
