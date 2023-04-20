@@ -49,8 +49,6 @@ export default function Table({ selected }) {
 
     useEffect(() => {
       if(selected === "all") return setData(filteredData);
-      // filter data if selected is not "all"
-
       const filterData = data.filter((item) => selected ? item.status === selected : true);
       setData(filterData);
     }, [selected]);

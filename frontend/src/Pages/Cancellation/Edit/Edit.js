@@ -89,8 +89,8 @@ export default function Edit() {
 
   return (
     <form className="w-full" onSubmit={handleSubmit}>
-      <div className="flex gap-10">
-        <div className="flex flex-col gap-10">
+      <div className="flex flex-col xl:flex-row gap-10">
+        <div className="w-full xl:w-[25%] flex flex-col justify-center xl:justify-start items-center xl:items-start gap-10">
           <div>
             <img
               src={avatar}
@@ -100,13 +100,13 @@ export default function Edit() {
           </div>
 
           <div className="text-md text-gray-500">
-            <p> Enter the required information to update. </p>
-            <p> These are editable. </p>
+            <p className="text-center xl:text-left"> Enter the required information to update. </p>
+            <p className="text-center xl:text-left "> These are editable. </p>
           </div>
         </div>
 
         {/* username, email, roomType, startTime, endTime, roomNumber  */}
-        <div className="flex gap-10 justify-between flex-1">
+        <div className="flex flex-col md:flex-row gap-5 xl:gap-10 justify-between flex-1">
           <div className="flex-1 flex flex-col gap-4">
             {/* Username */}
             <div className="flex flex-col gap-2">
@@ -170,7 +170,7 @@ export default function Edit() {
           </div>
 
           {/* Check-in-out */}
-          <div className="flex-1  flex flex-col justify-center items-center gap-4">
+          <div className="md:w-[40%] lg:w-[45%] flex flex-col justify-center items-center gap-4">
             <div className="rounded-md border px-4 py-5 w-full h-full bg-white flex flex-col justify-between shadow hover:shadow-lg transition-all ease-linear">
               <input
                 type="datetime-local"
@@ -197,8 +197,8 @@ export default function Edit() {
         </div>
       </div>
 
-      <div className="flex item-center justify-end mt-5">
-        <button className="px-2 w-52 py-3 rounded-md bg-p4 text-white hover:bg-red-500 hover:shadow-xl transition-all">
+      <div className="flex item-center w-full justify-end mt-5">
+        <button onSubmit={handleSubmit} className="px-2 w-full xl:w-52 py-6 rounded-xl bg-black text-white hover:bg-[#000000] hover:shadow-xl transition-all">
           Update
         </button>
       </div>

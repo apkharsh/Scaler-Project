@@ -12,7 +12,7 @@ export default function CancelRoutes() {
         <Route path="/" element={<Cancellation />} />
         <Route path="/edit/:id" element={<Edit />} />
         <Route path="/cancel/:id" element={<Cancel />} />
-        <Route path="*" element={<Navigate to="/cancel" />} />
+        <Route path="*" element={<Navigate to="/checkout" />} />
       </Routes>
     </CancelTemp>
   );
