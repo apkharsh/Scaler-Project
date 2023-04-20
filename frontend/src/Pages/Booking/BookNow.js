@@ -142,7 +142,7 @@ export default function BookNow() {
                   type="text"
                   name="roomNumber"
                   onChange={handleChange}
-                  placeholder="Username"
+                  placeholder="Optional"
                   className="outline-none w-full px-2 py-3 border rounded-md shadow focus:shadow-lg transition-all"
                 />
               </div>
@@ -150,13 +150,20 @@ export default function BookNow() {
                 <label htmlFor="" className="text-lg">
                   Room Type
                 </label>
-                <input
+                
+                <select name="roomType" id="" onChange={handleChange}>
+                  <option value="Standard">Standard</option>
+                  <option value="Classic">Classic</option>
+                  <option value="Deluxe">Deluxe</option>
+                </select>
+
+                {/* <input
                   type="text"
                   name="roomType"
                   onChange={handleChange}
-                  placeholder="Username"
+                  placeholder="Standard"
                   className="outline-none w-full px-2 py-3 border rounded-md shadow focus:shadow-lg transition-all"
-                />
+                /> */}
               </div>
             </div>
           </div>
