@@ -151,7 +151,7 @@ export default function BookNow() {
                   Room Type
                 </label>
                 
-                <select name="roomType" id="" onChange={handleChange}>
+                <select className="outline-none w-full px-2 py-3 border rounded-md shadow focus:shadow-lg transition-all" name="roomType" id="" onChange={handleChange}>
                   <option value="Standard">Standard</option>
                   <option value="Classic">Classic</option>
                   <option value="Deluxe">Deluxe</option>
