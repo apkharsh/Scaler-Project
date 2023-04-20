@@ -10,198 +10,231 @@ import { BASE_URL } from "../../../Config/url";
 cors();
 
 export default function Edit() {
-  const navigate = useNavigate();
+    const navigate = useNavigate();
 
-  const locaiton = useLocation();
-  const [data, setData] = useState(locaiton.state?.data);
+    const locaiton = useLocation();
+    const [data, setData] = useState(locaiton.state?.data);
 
-  const [loading1, setLoading1] = useState(false);
-  const [loading2, setLoading2] = useState(false);
+    const [loading1, setLoading1] = useState(false);
+    const [loading2, setLoading2] = useState(false);
 
-  console.log(data);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    // user will enter the date in normal format but backend will only handle unix timestamp
-    // so convert the date to unix timestamp
-
-    if (name === "checkInTime") {
-      const unixTime = new Date(value).getTime();
-      setData((prevData) => {
-        return {
-          ...prevData,
-          checkInTime: unixTime,
-        };
-      });
-    } else if (name === "checkOutTime") {
-      const unixTime = new Date(value).getTime();
-      setData((prevData) => {
-        return {
-          ...prevData,
-          checkOutTime: unixTime,
-        };
-      });
-    } else {
-      setData((prevData) => {
-        return {
-          ...prevData,
-          [name]: value,
-        };
-      });
+    function convertDateTimeLocalToUnixTime(datetimeLocalStr) {
+        const dateObj = new Date(datetimeLocalStr);
+        const unixTime = dateObj.getTime();
+        return unixTime;
     }
-  };
-  const { id } = useParams();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setLoading1(true);
-    const { userName, email, roomType, checkInTime, checkOutTime } = data;
+    const formattedData = () => {
+        const checkIn = data?.checkInTime;
+        const checkOut = data?.checkOutTime;
+        const unixTime = convertDateTimeLocalToUnixTime(checkIn);
+        const unixTime2 = convertDateTimeLocalToUnixTime(checkOut);
+        return { unixTime, unixTime2 };
+    };
 
-    let c1 = new Date(checkInTime).getTime();
-    let c2 = new Date(checkOutTime).getTime();
+    const handleChange = (e) => {
+        const { name, value } = e.target;
 
-    fetch(`${BASE_URL}/bookings/update/${id}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        xFormUrlEncoded: "true",
-      },
-      body: JSON.stringify({
-        username: userName,
-        email: email,
-        startTime: c1,
-        endTime: c2,
-        roomType: roomType,
-      }),
-    })
-      .then((res) => {
-        res.json();
-        setLoading1(false);
-        setLoading2(true);
-        setTimeout(() => {
-          navigate("/");
-        }, 1000);
-      })
-      .then((data) => console.log(data))
-      .catch((err) => console.log(err));
-  };
+        // user will enter the date in normal format but backend will only handle unix timestamp
+        // so convert the date to unix timestamp
 
-  return (
-    <form className="w-full" onSubmit={handleSubmit}>
-      <div className="flex flex-col xl:flex-row gap-10">
-        <div className="w-full xl:w-[25%] flex flex-col justify-center xl:justify-start items-center xl:items-start gap-10">
-          <div>
-            <img
-              src={avatar}
-              alt="profile_picture"
-              className="w-24 rounded-full"
-            />
-          </div>
+        // if (name === "checkInTime") {
+        //   const unixTime = new Date(value).getTime();
+        //   setData((prevData) => {
+        //     return {
+        //       ...prevData,
+        //       checkInTime: unixTime,
+        //     };
+        //   });
+        // } else if (name === "checkOutTime") {
+        //   const unixTime = new Date(value).getTime();
+        //   setData((prevData) => {
+        //     return {
+        //       ...prevData,
+        //       checkOutTime: unixTime,
+        //     };
+        //   });
+        // } else {
+        setData((prevData) => {
+            return {
+                ...prevData,
+                [name]: value,
+            };
+        });
+        // }
+    };
+    const { id } = useParams();
 
-          <div className="text-md text-gray-500">
-            <p className="text-center xl:text-left"> Enter the required information to update. </p>
-            <p className="text-center xl:text-left "> These are editable. </p>
-          </div>
-        </div>
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const { unixTime, unixTime2 } = formattedData();
 
-        {/* username, email, roomType, startTime, endTime, roomNumber  */}
-        <div className="flex flex-col md:flex-row gap-5 xl:gap-10 justify-between flex-1">
-          <div className="flex-1 flex flex-col gap-4">
-            {/* Username */}
-            <div className="flex flex-col gap-2">
-              <label htmlFor="" className="text-xl">
-                Username
-              </label>
-              <input
-                type="text"
-                name="userName"
-                value={data?.userName}
-                onChange={handleChange}
-                placeholder="ApkHarsh"
-                className="outline-none w-full px-2 py-3 border rounded-md shadow focus:shadow-lg transition-all"
-              />
+        setLoading1(true);
+        const { userName, email, roomType, checkInTime, checkOutTime } = data;
+
+        let c1 = new Date(checkInTime).getTime();
+        let c2 = new Date(checkOutTime).getTime();
+
+        fetch(`${BASE_URL}/bookings/update/${id}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                xFormUrlEncoded: "true",
+            },
+            body: JSON.stringify({
+                username: userName,
+                email: email,
+                startTime: unixTime,
+                endTime: unixTime2,
+                roomType: roomType,
+            }),
+        })
+            .then((res) => {
+                res.json();
+                setLoading1(false);
+                setLoading2(true);
+                setTimeout(() => {
+                    navigate("/");
+                }, 1000);
+            })
+            .then((data) => console.log(data))
+            .catch((err) => {
+              setLoading1(false);
+              setLoading2(false);
+              console.log(err + "error")
+            });
+    };
+
+    return (
+        <form className="w-full" onSubmit={handleSubmit}>
+            <div className="flex flex-col xl:flex-row gap-10">
+                <div className="w-full xl:w-[25%] flex flex-col justify-center xl:justify-start items-center xl:items-start gap-10">
+                    <div>
+                        <img
+                            src={avatar}
+                            alt="profile_picture"
+                            className="w-24 rounded-full"
+                        />
+                    </div>
+
+                    <div className="text-md text-gray-500">
+                        <p className="text-center xl:text-left">
+                            {" "}
+                            Enter the required information to update.{" "}
+                        </p>
+                        <p className="text-center xl:text-left ">
+                            {" "}
+                            These are editable.{" "}
+                        </p>
+                    </div>
+                </div>
+
+                {/* username, email, roomType, startTime, endTime, roomNumber  */}
+                <div className="flex flex-col md:flex-row gap-5 xl:gap-10 justify-between flex-1">
+                    <div className="flex-1 flex flex-col gap-4">
+                        {/* Username */}
+                        <div className="flex flex-col gap-2">
+                            <label htmlFor="" className="text-xl">
+                                Username
+                            </label>
+                            <input
+                                type="text"
+                                name="userName"
+                                value={data?.userName}
+                                onChange={handleChange}
+                                placeholder="ApkHarsh"
+                                className="outline-none w-full px-2 py-3 border rounded-md shadow focus:shadow-lg transition-all"
+                            />
+                        </div>
+
+                        {/* Email */}
+                        <div className="flex flex-col gap-2">
+                            <label htmlFor="" className="text-xl">
+                                Email Address
+                            </label>
+                            <input
+                                type="email"
+                                name="email"
+                                value={data?.email}
+                                onChange={handleChange}
+                                placeholder="harsh.kumar@gmail.com"
+                                className="outline-none w-full px-2 py-3 border rounded-md shadow focus:shadow-lg transition-all"
+                            />
+                        </div>
+
+                        {/* Room Details */}
+                        <div className="flex gap-3">
+                            <div className="flex-1 flex flex-col gap-2">
+                                <label htmlFor="" className="text-xl">
+                                    Room No.
+                                </label>
+                                <input
+                                    type="text"
+                                    name="roomNumber"
+                                    placeholder="Number"
+                                    value={data?.roomNumber}
+                                    onChange={handleChange}
+                                    className="outline-none w-full px-2 py-3 border rounded-md shadow focus:shadow-lg transition-all"
+                                />
+                            </div>
+                            <div className="flex-1 flex flex-col gap-2">
+                                <label htmlFor="" className="text-xl">
+                                    Room Type
+                                </label>
+                                <input
+                                    type="text"
+                                    name="roomType"
+                                    value={data?.roomType}
+                                    onChange={handleChange}
+                                    placeholder="Type"
+                                    className="outline-none w-full px-2 py-3 border rounded-md shadow focus:shadow-lg transition-all"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Check-in-out */}
+                    <div className="md:w-[40%] lg:w-[45%] flex flex-col justify-center items-center gap-4">
+                        <div className="rounded-md border px-4 py-5 w-full h-full bg-white flex flex-col justify-between shadow hover:shadow-lg transition-all ease-linear">
+                            <input
+                                type="datetime-local"
+                                name="checkInTime"
+                                value={data?.checkInTime}
+                                onChange={handleChange}
+                                id=""
+                                className="text-2xl font-bold outline-none"
+                            />
+                            <p className="text-[16px] text-gray-600">
+                                {" "}
+                                Check-in{" "}
+                            </p>
+                        </div>
+                        <div className="rounded-md border px-4 py-5 w-full h-full bg-white flex flex-col justify-between shadow hover:shadow-lg transition-all ease-linear">
+                            <input
+                                type="datetime-local"
+                                name="checkOutTime"
+                                value={data?.checkOutTime}
+                                onChange={handleChange}
+                                id=""
+                                className="text-2xl font-bold outline-none"
+                            />
+                            <p className="text-[16px] text-gray-600">
+                                {" "}
+                                Check-out{" "}
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            {/* Email */}
-            <div className="flex flex-col gap-2">
-              <label htmlFor="" className="text-xl">
-                Email Address
-              </label>
-              <input
-                type="email"
-                name="email"
-                value={data?.email}
-                onChange={handleChange}
-                placeholder="harsh.kumar@gmail.com"
-                className="outline-none w-full px-2 py-3 border rounded-md shadow focus:shadow-lg transition-all"
-              />
+            <div className="flex item-center w-full justify-end mt-5">
+                <button
+                    onSubmit={handleSubmit}
+                    className="px-2 w-full xl:w-52 py-6 rounded-xl bg-black text-white hover:bg-[#000000] hover:shadow-xl transition-all"
+                >
+                    Update
+                </button>
             </div>
-
-            {/* Room Details */}
-            <div className="flex gap-3">
-              <div className="flex-1 flex flex-col gap-2">
-                <label htmlFor="" className="text-xl">
-                  Room No.
-                </label>
-                <input
-                  type="text"
-                  name="roomNumber"
-                  placeholder="Number"
-                  value={data?.roomNumber}
-                  onChange={handleChange}
-                  className="outline-none w-full px-2 py-3 border rounded-md shadow focus:shadow-lg transition-all"
-                />
-              </div>
-              <div className="flex-1 flex flex-col gap-2">
-                <label htmlFor="" className="text-xl">
-                  Room Type
-                </label>
-                <input
-                  type="text"
-                  name="roomType"
-                  value={data?.roomType}
-                  onChange={handleChange}
-                  placeholder="Type"
-                  className="outline-none w-full px-2 py-3 border rounded-md shadow focus:shadow-lg transition-all"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Check-in-out */}
-          <div className="md:w-[40%] lg:w-[45%] flex flex-col justify-center items-center gap-4">
-            <div className="rounded-md border px-4 py-5 w-full h-full bg-white flex flex-col justify-between shadow hover:shadow-lg transition-all ease-linear">
-              <input
-                type="datetime-local"
-                name="checkInTime"
-                value={data?.checkInTime}
-                onChange={handleChange}
-                id=""
-                className="text-2xl font-bold outline-none"
-              />
-              <p className="text-[16px] text-gray-600"> Check-in </p>
-            </div>
-            <div className="rounded-md border px-4 py-5 w-full h-full bg-white flex flex-col justify-between shadow hover:shadow-lg transition-all ease-linear">
-              <input
-                type="datetime-local"
-                name="checkOutTime"
-                value={data?.checkOutTime}
-                onChange={handleChange}
-                id=""
-                className="text-2xl font-bold outline-none"
-              />
-              <p className="text-[16px] text-gray-600"> Check-out </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex item-center w-full justify-end mt-5">
-        <button onSubmit={handleSubmit} className="px-2 w-full xl:w-52 py-6 rounded-xl bg-black text-white hover:bg-[#000000] hover:shadow-xl transition-all">
-          Update
-        </button>
-      </div>
-    </form>
-  );
+        </form>
+    );
 }

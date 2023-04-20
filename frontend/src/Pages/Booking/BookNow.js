@@ -6,6 +6,7 @@ import Loader from "../../Assets/Lotties/Loader.json";
 import { AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router";
 import { BASE_URL } from "../../Config/url";
+import Error from '../../Components/Error'
 
 export default function BookNow() {
   const navigate = useNavigate();
@@ -20,13 +21,15 @@ export default function BookNow() {
   
   const [loading1, setLoading1] = useState(false);
   const [loading2, setLoading2] = useState(false);
+  const [error, setError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
     // user will enter the date in normal format but backend will only handle unix timestamp
     // so convert the date to unix timestamp
-
+    // console.log(e.target.value);
     if (name === "startTime") {
       const unixTime = new Date(value).getTime();
       setData((prevData) => {
@@ -69,16 +72,34 @@ export default function BookNow() {
       },
       body: JSON.stringify({ username, email, roomType, startTime, endTime }),
     })
-      .then((res) => {
-        res.json();
-        setLoading1(false);
-        setLoading2(true);
-        setTimeout(() => {
-          navigate("/");
-        }, 1000);
+    .then((res)=>{
+      res.json()
+      .then((resp)=>{
+        console.log(resp)
+        if(resp.error){
+          setLoading1(false);
+          setError(true);
+          setErrorMsg(resp.error);
+          setTimeout(()=>{
+            setError(false);
+          },2000)
+        } else {
+          setLoading1(false);
+          setLoading2(true);
+          setTimeout(() => {
+            navigate("/");
+          }, 1000);
+        }
       })
-      .then((data) => console.log(data))
-      .catch((err) => console.log(err));
+      .catch((err)=>{
+        console.log(err)
+        return (
+          <Error props={err}/>
+        )
+
+      })
+    })
+
   };
 
   return (
@@ -194,6 +215,10 @@ export default function BookNow() {
         </div>
       </div>
 
+      {error ? (
+        <Error errror={errorMsg}/>)
+        : null}
+
       <div className="flex item-center w-full justify-end mt-5">
         <button
           onClick={handleSubmit}
@@ -218,6 +243,7 @@ export default function BookNow() {
             />
           </div>
         )}
+        
       </AnimatePresence>
     </form>
   );
