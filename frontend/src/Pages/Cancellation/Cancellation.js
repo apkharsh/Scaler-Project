@@ -7,38 +7,38 @@ import Lottie from "lottie-react";
 import { BASE_URL } from "../../Config/url";
 
 export default function Cancellation() {
-    function convertTime(unixTime) {// Example Unix time
-      const dateObj = new Date(unixTime);
+    // converting time from unix to date and time so that it can be used in input type="datetime-local"
+    function convertTime(unixTime) {
+        
+        const dateObj = new Date(unixTime);
+        if (unixTime.toString().length === 10) {
+            // Unix time is in seconds, convert to milliseconds
+            dateObj.setTime(unixTime * 1000);
+        }
 
-      if (unixTime.toString().length === 10) {
-        // Unix time is in seconds, convert to milliseconds
-        dateObj.setTime(unixTime * 1000);
-      }
-    
-      const year = dateObj.getFullYear();
-      const month = ("0" + (dateObj.getMonth() + 1)).slice(-2);
-      const day = ("0" + dateObj.getDate()).slice(-2);
-      const hours = ("0" + dateObj.getHours()).slice(-2);
-      const minutes = ("0" + dateObj.getMinutes()).slice(-2);
-    
-      const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}`;
-      return formattedDate;
+        const year = dateObj.getFullYear();
+        const month = ("0" + (dateObj.getMonth() + 1)).slice(-2);
+        const day = ("0" + dateObj.getDate()).slice(-2);
+        const hours = ("0" + dateObj.getHours()).slice(-2);
+        const minutes = ("0" + dateObj.getMinutes()).slice(-2);
+
+        const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}`;
+        return formattedDate;
     }
 
+    // this state is handling the data from the backend
     const [data, setData] = React.useState([]);
     const [loading, setLoading] = useState(false);
 
+    // this function is fetching data from the backend for all the bookings
     const fetchData = async () => {
         setLoading(true);
+
         const response = await fetch(`${BASE_URL}/bookings/all`);
-
         var dataLocal = await response.json();
-
         // change checkInTime and checkOutTime from unix to date and time
         dataLocal.filtered_bookings.forEach((item) => {
-            // if current time is between checkInTime and checkOutTime then status = "checked in"
-            // else if current time is after checkOutTime then status = "checked out"
-            // else status = "not checked in"
+
             const currentTime = new Date().getTime();
             const checkInTime = new Date(item.checkInTime).getTime();
             const checkOutTime = new Date(item.checkOutTime).getTime();
@@ -47,16 +47,16 @@ export default function Cancellation() {
             else if (currentTime > checkOutTime) item.status = "checked out";
             else item.status = "not checked in";
 
-            // item.checkInTime = new Date(item.checkInTime).toLocaleString();
-            // item.checkOutTime = new Date(item.checkOutTime).toLocaleString();
-
             item.checkInTime = convertTime(item.checkInTime);
             item.checkOutTime = convertTime(item.checkOutTime);
-
         });
+
+        console.log(dataLocal.filtered_bookings)
+
         setData(dataLocal.filtered_bookings);
         setLoading(false);
     };
+
     // use effect
     React.useEffect(() => {
         fetchData();
@@ -92,6 +92,7 @@ export default function Cancellation() {
             name: "Actions",
         },
     ];
+
     return (
         <motion.div className="w-full border h-[max-content] shadow rounded-xl scrollbar-hide overflow-x-auto ">
             <table className="w-full min-w-[10rem] overflow-auto">

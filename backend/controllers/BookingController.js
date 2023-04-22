@@ -6,9 +6,8 @@ const { get_available_rooms, send_email, checkRoomAvailability } = require("./He
 // /api/bookings/create
 // COMPLETE
 const bookRoom = async (req, res) => {
-    
     const { username, email, roomType, startTime, endTime, roomNumber } = req.body;
-
+    
     if (!username || !email || !startTime || !endTime) {
         return res.status(400).json({
             error: "Please enter all the fields",
@@ -137,6 +136,7 @@ const bookRoom = async (req, res) => {
 const updateBooking = async (req, res) => {
 
     const { email, username, startTime, endTime, roomNumber } = req.body;
+    console.log(req.body);  
     
     // Get the booking with the given id
     // Check if the booking exists
@@ -150,6 +150,7 @@ const updateBooking = async (req, res) => {
             error: "Booking not found",
         });
     }
+
     else {
 
         let final_val = {};
@@ -157,49 +158,46 @@ const updateBooking = async (req, res) => {
         if (email) {
             final_val.email = email;
         }
-        else
-        {
+        else{
             final_val.email = booking.email;
         }
 
         if (username) {
             final_val.userName = username;
         }
-        else
-        {
+        else{
             final_val.userName = booking.userName;
         }
 
         if (startTime) {
             final_val.checkInTime = startTime;
         }
-        else
-        {
+        else{
             final_val.checkInTime = booking.startTime;
         }
 
         if (endTime) {
             final_val.checkOutTime = endTime;
         }
-        else
-        {
+        else{
             final_val.checkOutTime = booking.endTime;
         }
 
-        // var flag = false;
 
         if (roomNumber) {
             // Find Room ID
+            // console.log("checking if room is available or not")
             const room = await Room.findOne({ roomNumber: roomNumber });
             
             if (!room) {
-                // flag = true;                
+                // console.log("room not found")
                 return res.status(400).json({
                     error: "Room not found",
                 });
             }
             else
             {
+                // console.log("room found")
                 final_val.roomID = room._id;
             }
         }
@@ -207,6 +205,7 @@ const updateBooking = async (req, res) => {
         {
             final_val.roomID = booking.roomID;
         }
+        // console.log(final_val)
 
         // Check if this booking is possible
         // Check room availability

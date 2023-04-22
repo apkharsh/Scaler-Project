@@ -47,4 +47,5 @@ bookingSchema.methods.getRefund = function () {
 }
 
 const Booking = mongoose.model("Booking", bookingSchema);
+
 module.exports = Booking;

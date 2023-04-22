@@ -6,7 +6,6 @@ const db = require("./db.js");
 const app = express();
 const cors = require("cors");
 
-
 // Middleware
 app.use(cors());
 app.use(bodyParser.json(), bodyParser.urlencoded({ extended: true }));
@@ -20,7 +19,7 @@ db.on("error", console.error.bind(console, "MongoDB connection error:"));
 db.once("open", () => console.log("Connected to MongoDB!"));
 
 // CLEAR DB
-app.get("/api/clear", async (req, res) => {
+app.post("/api/clear", async (req, res) => {
     await db.dropDatabase();
     res.status(200).json({
         message: "Database cleared",

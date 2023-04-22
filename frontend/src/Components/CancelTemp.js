@@ -6,6 +6,9 @@ import { Link, useLocation } from "react-router-dom";
 export default function CancelTemp({ children }) {
   const route = useLocation().pathname.split("/");
 
+  // remove empty string from route reverse
+  const arr = route.reverse().filter((item) => item !== "");
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -18,7 +21,8 @@ export default function CancelTemp({ children }) {
     >
       <div className="flex justify-between items-center">
         <h1 className="text-4xl lg:text-5xl font-black flex capitalize items-center gap-2">
-          {route.pop()}
+          
+          {arr.pop()}
           {route === "checkout" && (
             <span>
               <CancellationIcon className="w-11 h-11 " />

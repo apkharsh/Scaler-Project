@@ -186,8 +186,8 @@ export default function BookNow() {
                                     <option value="Standard" defaultChecked>
                                         Standard
                                     </option>
-                                    <option value="Classic">Classic</option>
                                     <option value="Deluxe">Deluxe</option>
+                                    <option value="Supreme">Supreme</option>
                                 </select>
                             </div>
                         </div>

@@ -21,6 +21,7 @@ export default function Edit() {
 
     const [loading1, setLoading1] = useState(false);
     const [loading2, setLoading2] = useState(false);
+
     const [error, setError] = useState(null);
 
     function convertDateTimeLocalToUnixTime(datetimeLocalStr) {
@@ -51,12 +52,15 @@ export default function Edit() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading1(true);
+
+        // console.log(data)
         const { unixTime, unixTime2 } = formattedData();
 
-        const { userName, email, roomType, checkInTime, checkOutTime } = data;
+        const { userName, email, roomType , checkInTime, checkOutTime } = data;
+        const roomNumber = data.roomNumber;
         // checkin and checkout time is coming form above convertDateTimeLocalToUnixTime function
 
-        fetch(`${BASE_URL}/bookings/update/${id}`, {
+        const response = await fetch(`${BASE_URL}/bookings/update/${id}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -68,38 +72,31 @@ export default function Edit() {
                 startTime: unixTime,
                 endTime: unixTime2,
                 roomType: roomType,
+                roomNumber: roomNumber,
             }),
-        })
-            .then((res) => {
-                res.json();
-                setLoading1(false);
-                setLoading2(true);
+        });
 
-            })
-            .then((data) => {
-                if (data.error) {
-                    setError(data.error);
-                    return;
-                } else {
-                    setLoading1(false);
-                    setLoading2(true);
-                    setTimeout(() => {
-                        navigate("/");
-                    }, 1000);
-                }
-            })
-            .catch((err) => {
-                setLoading1(false);
+        const result = await response.json();
+        // console.log(result);
+
+        setLoading1(false);
+        if (result.error) {
+            setError(result.error);
+            <Error error={error} />;
+            return;
+        } else {
+            setLoading2(true);
+            setTimeout(() => {
                 setLoading2(false);
-                setError(err);
-                // console.log(err + "error");
-            });
+                navigate("/");
+            }, 1000);
+        }
     };
 
     useEffect(() => {
-      setTimeout(() => {
-        setError(null);
-      }, 3000);
+        setTimeout(() => {
+            setError(null);
+        }, 3000);
     }, [error]);
 
     return (

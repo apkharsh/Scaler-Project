@@ -13,7 +13,9 @@ export default function Table({ selected }) {
         setLoading(true);
         try {
             const response = await fetch(`${BASE_URL}/bookings/all`);
-
+            // const response = await fetch(`${BASE_URL}/bookings/all`,{
+            //     params: {}
+            // });
             var dataLocal = await response.json();
 
             // change checkInTime and checkOutTime from unix to date and time
@@ -103,7 +105,7 @@ export default function Table({ selected }) {
             <tbody className="bg-white text-black">
                 {loading ? (
                     <tr>
-                        <td colSpan="6">
+                        <td colSpan="7">
                             <div className="w-full flex flex-col justify-center items-center">
                                 <Lottie
                                     className="w-52"

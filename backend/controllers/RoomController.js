@@ -62,7 +62,6 @@ const createRoom = async (req, res) => {
 const deleteRoom = async (req, res) => {
     
     const roomID = req.params.id;
-
     // Check if there is a room with the given ID
     const room = await Room.findById(roomID);
 
