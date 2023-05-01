@@ -1,22 +1,26 @@
 // In controllers/bookings.js
 const Booking = require("../models/Booking");
 const Room = require("../models/Room");
-const { get_available_rooms, send_email, checkRoomAvailability } = require("./Helper");
+const {
+    get_available_rooms,
+    send_email,
+    checkRoomAvailability,
+} = require("./Helper");
 
 // /api/bookings/create
 // COMPLETE
 const bookRoom = async (req, res) => {
-    const { username, email, roomType, startTime, endTime, roomNumber } = req.body;
-    
+    console.log("we got a request to book a room");
+    const { username, email, roomType, startTime, endTime, roomNumber } =
+        req.body;
+
     if (!username || !email || !startTime || !endTime) {
         return res.status(400).json({
             error: "Please enter all the fields",
         });
-    } 
-    else {
+    } else {
         // If room number is given, check that exact room
         if (roomNumber == null) {
-
             if (roomType == null) {
                 return res.status(400).json({
                     error: "Please enter a room type",
@@ -29,12 +33,15 @@ const bookRoom = async (req, res) => {
                 endTime,
                 roomType
             );
+            console.log("looging for " + roomType);
+            console.log("These are the available room " + available_rooms);
 
             if (available_rooms.length == 0) {
                 return res.status(400).json({
                     error: "No rooms available",
                 });
             } else {
+                console.log("doing a booking");
                 // Pick the first room
                 const roomID = available_rooms[0];
 
@@ -134,10 +141,9 @@ const bookRoom = async (req, res) => {
 // /api/bookings/update/:id
 // COMPLETE
 const updateBooking = async (req, res) => {
-
     const { email, username, startTime, endTime, roomNumber } = req.body;
-    console.log(req.body);  
-    
+    console.log(req.body);
+
     // Get the booking with the given id
     // Check if the booking exists
     const { id } = req.params;
@@ -149,67 +155,60 @@ const updateBooking = async (req, res) => {
         return res.status(400).json({
             error: "Booking not found",
         });
-    }
-
-    else {
-
+    } else {
         let final_val = {};
-        
+
         if (email) {
             final_val.email = email;
-        }
-        else{
+        } else {
             final_val.email = booking.email;
         }
 
         if (username) {
             final_val.userName = username;
-        }
-        else{
+        } else {
             final_val.userName = booking.userName;
         }
 
         if (startTime) {
             final_val.checkInTime = startTime;
-        }
-        else{
+        } else {
             final_val.checkInTime = booking.startTime;
         }
 
         if (endTime) {
             final_val.checkOutTime = endTime;
-        }
-        else{
+        } else {
             final_val.checkOutTime = booking.endTime;
         }
-
 
         if (roomNumber) {
             // Find Room ID
             // console.log("checking if room is available or not")
             const room = await Room.findOne({ roomNumber: roomNumber });
-            
+
             if (!room) {
                 // console.log("room not found")
                 return res.status(400).json({
                     error: "Room not found",
                 });
-            }
-            else
-            {
+            } else {
                 // console.log("room found")
                 final_val.roomID = room._id;
             }
-        }
-        else
-        {
+        } else {
             final_val.roomID = booking.roomID;
         }
         // console.log(final_val)
 
         // Check if this booking is possible
         // Check room availability
-        const isPossible = await checkRoomAvailability(final_val.roomID, final_val.checkInTime, final_val.checkOutTime, booking._id);
+        const isPossible = await checkRoomAvailability(
+            final_val.roomID,
+            final_val.checkInTime,
+            final_val.checkOutTime,
+            booking._id
+        );
 
         if (!isPossible) {
             return res.status(400).json({
@@ -233,7 +232,6 @@ const updateBooking = async (req, res) => {
 // /api/bookings/delete/:id
 // COMPLETE
 const deleteBooking = async (req, res) => {
-
     const { id } = req.params;
 
     try {
@@ -295,11 +293,11 @@ const getRefundAmount = async (req, res) => {
 // /api/bookings/all?roomType=A&roomNumber=101&startTime=t1&endTime=t2&id='xyz'
 // COMPLETE
 const getBookings = async (req, res) => {
-    
     console.log("Find Bookings...");
 
     try {
-        const { id, roomType, roomNumber, startTime, endTime } = await req.query;
+        const { id, roomType, roomNumber, startTime, endTime } =
+            await req.query;
 
         if (id) {
             // Find a single booking with a bookingId
@@ -313,9 +311,7 @@ const getBookings = async (req, res) => {
             return res.status(200).json({
                 booking: populated_booking,
             });
-        } 
-        else {
-
+        } else {
             let filters = {};
 
             if (startTime && endTime) {
@@ -329,7 +325,6 @@ const getBookings = async (req, res) => {
 
             // Populate the rooms
             for (let i = 0; i < bookings.length; i++) {
-                
                 const populated_booking = await Booking.findById(
                     bookings[i]._id
                 ).populate("roomID");
@@ -350,7 +345,7 @@ const getBookings = async (req, res) => {
                     }
                 }
 
-                if(roomType == null && roomNumber == null)
+                if (roomType == null && roomNumber == null)
                     filtered_bookings.push(populated_booking);
             }
             return res.status(200).json({

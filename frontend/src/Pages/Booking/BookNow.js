@@ -26,41 +26,24 @@ export default function BookNow() {
     const handleChange = (e) => {
         const { name, value } = e.target;
 
-        // user will enter the date in normal format but backend will only handle unix timestamp
-        // so convert the date to unix timestamp
-        // console.log(e.target.value);
-        if (name === "startTime") {
-            const unixTime = new Date(value).getTime();
-            setData((prevData) => {
-                return {
-                    ...prevData,
-                    startTime: unixTime,
-                };
-            });
-        } else if (name === "endTime") {
-            const unixTime = new Date(value).getTime();
-            setData((prevData) => {
-                return {
-                    ...prevData,
-                    endTime: unixTime,
-                };
-            });
-        } else {
-            setData((prevData) => {
-                return {
-                    ...prevData,
-                    [name]: value,
-                };
-            });
-        }
+        setData((prevData) => {
+            return {
+                ...prevData,
+                [name]: value,
+            };
+        });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading1(true);
         const { username, email, roomType, startTime, endTime } = data;
-
+    
         try {
+            // converting the time to unix time
+            const unixStartTime = new Date(startTime).getTime();
+            const unixEndTime = new Date(endTime).getTime();
+            
             const response = await fetch(`${BASE_URL}/bookings/create`, {
                 method: "POST",
                 headers: {
@@ -71,17 +54,17 @@ export default function BookNow() {
                     username,
                     email,
                     roomType,
-                    startTime,
-                    endTime,
+                    startTime: unixStartTime,
+                    endTime: unixEndTime,
                 }),
             });
 
-            const data = await response.json();
+            const res = await response.json();
 
             setLoading1(false);
 
-            if (data.error) {
-                setError(data.error);
+            if (res.error) {
+                setError(res.error);
             } else {
                 setLoading2(true);
                 setTimeout(() => {
@@ -183,11 +166,10 @@ export default function BookNow() {
                                     id=""
                                     onChange={handleChange}
                                 >
-                                    <option value="Standard" defaultChecked>
-                                        Standard
-                                    </option>
+                                    <option value="" disabled selected className="hidden"></option>
+                                    <option value="Standard">Standard</option>
                                     <option value="Deluxe">Deluxe</option>
-                                    <option value="Supreme">Supreme</option>
+                                    <option value="Supreme" defaultChecked>Supreme</option>
                                 </select>
                             </div>
                         </div>
